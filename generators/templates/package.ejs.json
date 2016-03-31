@@ -1,0 +1,21 @@
+{
+  "name": "<% appname %>",
+  "version": "1.0.0",
+  "main": "server/server.js",
+  "scripts": {
+    "postinstall": "npm run client:build",
+    "client:watch": "webpack-dev-server --config client/webpack.config.dev.js --hot",
+    "client:build": "webpack --config client/webpack.config.prod.js",
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "<% appname %>"
+}
