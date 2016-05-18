@@ -23,9 +23,11 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
-  writing: function() {
+  changeRootFolder: function() {
     /* Configure root directory */
     directoryActions.setRoot.apply(this);
+  },
+  installDependencies: function() {
     this.npmInstall([
         'babel-cli',
         'babel-core',
@@ -46,10 +48,14 @@ module.exports = yeoman.generators.Base.extend({
         'redux-thunk',
         'webpack'
     ], {save: true});
+  },
+  installDevDependencies: function() {
     this.npmInstall([
         'webpack-notifier',
         'webpack-dev-server'
     ], {saveDev: true});
+  },
+  copyFiles: function() {
     [
       'source/components/root/index.jsx',
       'source/containers/home-view/index.jsx',
@@ -65,6 +71,8 @@ module.exports = yeoman.generators.Base.extend({
         this.destinationPath(`client/${item}`)
       );
     });
+  },
+  copyTemplates: function() {
     [
       'webpack.config.prod.ejs.js',
       'webpack.config.dev.ejs.js',
@@ -77,6 +85,14 @@ module.exports = yeoman.generators.Base.extend({
         this
       );
     });
+  },
+  updatePackageScripts: function() {
+    this.log('Update package scripts');
+    var info = this.fs.readJSON(this.destinationPath('package.json'));
+    info.scripts['client:watch'] = 'webpack-dev-server --config client/webpack.config.dev.js --hot';
+    info.scripts['client:build'] = 'webpack --config client/webpack.config.prod.js';
+    info.scripts['postinstall'] = 'npm run client:build';
+    this.fs.writeJSON(this.destinationPath('package.json'), info);
   },
   end: function() {
     this.config.set('appname', this.appname);

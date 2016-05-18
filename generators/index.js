@@ -6,36 +6,33 @@ module.exports = yeoman.generators.Base.extend({
   prompting: function() {
     var done = this.async();
     this.prompt([
-      questions.appname.apply(this)
+      questions.appname.apply(this),
+      questions.serverport.apply(this)
     ], (answers) => {
       Object.assign(this, answers);
       done();
     });
   },
-  writing: function() {
-    directoryActions.setRoot.apply(this);
-    this.fs.copyTpl(
-      this.templatePath('package.ejs.json'),
-      this.destinationPath('package.json'),
-      this
-    );
-  },
-  dispatch: function() {
-    this.composeWith('react-loopback:client', {
-      options: {
-        nested: true,
-        appname: this.appname
-      }
-    }, {
-      local: `${__dirname}/client`
-    });
+  dispatchServer: function() {
     this.composeWith('react-loopback:server', {
       options: {
         nested: true,
-        appname: this.appname
+        appname: this.appname,
+        serverport: this.serverport
       }
     }, {
       local: `${__dirname}/server`
+    });
+  },
+  dispatchClient: function() {
+    this.composeWith('react-loopback:client', {
+      options: {
+        nested: true,
+        appname: this.appname,
+        serverport: this.serverport
+      }
+    }, {
+      local: `${__dirname}/client`
     });
   },
   end: function() {
