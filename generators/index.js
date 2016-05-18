@@ -29,6 +29,14 @@ module.exports = yeoman.generators.Base.extend({
     }, {
       local: `${__dirname}/client`
     });
+    this.composeWith('react-loopback:server', {
+      options: {
+        nested: true,
+        appname: this.appname
+      }
+    }, {
+      local: `${__dirname}/server`
+    });
   },
   end: function() {
     this.config.set('appname', this.appname);
